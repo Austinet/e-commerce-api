@@ -1,0 +1,32 @@
+{
+  "name": "e-commerce-api",
+  "version": "1.0.0",
+  "description": "This contains the backend logic for an e-commerce app",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Austinet/e-commerce-api.git"
+  },
+  "keywords": [
+    "e-commerce",
+    "Austinet"
+  ],
+  "author": "Udhe Austine Ogaga",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Austinet/e-commerce-api/issues"
+  },
+  "homepage": "https://github.com/Austinet/e-commerce-api#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "joi": "^18.0.1",
+    "mongoose": "^8.18.0",
+    "nodemailer": "^7.0.5",
+    "uuid": "^11.1.0"
+  }
+}
