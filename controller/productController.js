@@ -1,5 +1,16 @@
-const getAllProducts = (req, res, next) => {
-  res.send("E-commerce API APP");
+const productModel = require("../schema/products");
+const joi = require("joi");
+
+//Get all products controller
+const getAllProducts = async (req, res, next) => {
+  try {
+    const products = await productModel.find();
+    res.send(products);
+  } catch (error) {
+    res.status(500).send({
+      message: error,
+    });
+  }
 };
 
 const addProduct = (req, res, next) => {
