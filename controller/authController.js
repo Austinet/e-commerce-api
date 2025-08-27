@@ -59,9 +59,33 @@ const register = async (req, res, next) => {
   // });
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
-  res.send("Logged in Successfully");
+
+  try {
+    //Check if account exists and if password is correct
+    const checkAccount = await userModel.findOne({ email });
+
+    if (!checkAccount) {
+      res.status(404).send({
+        message: "Account does not exist, please check email or create account",
+      });
+      return;
+    } else if (checkAccount.password !== password) {
+      res.status(400).send({
+        message: "Invalid Credentials",
+      });
+      return;
+    } else {
+      res.status(200).send({
+        message: "Logged in Successfully",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error,
+    });
+  }
 };
 
 module.exports = {
