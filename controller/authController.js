@@ -20,8 +20,8 @@ const register = async (req, res, next) => {
       return;
     }
 
-    const checkMail = await userModel.find({ email });
-
+    const checkMail = await userModel.findOne({ email });
+    console.log(checkMail);
     if (checkMail) {
       res.status(400).send({
         message: "Email address already used",

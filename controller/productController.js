@@ -51,6 +51,15 @@ const addProduct = async (req, res, next) => {
       return;
     }
 
+    // Check if product already exist
+    const product = await productModel.findOne({ productName });
+    if (product) {
+      res.status(400).send({
+        message: "Product already exist",
+      });
+      return;
+    }
+
     // Save to Database
     const newProduct = await productModel.create({
       productName,
@@ -72,6 +81,7 @@ const addProduct = async (req, res, next) => {
   }
 };
 
+//Delete products controller
 const deleteProduct = async (req, res, next) => {
   const id = req.params.id;
   const ownerId = req.body.ownerId;
@@ -105,6 +115,25 @@ const deleteProduct = async (req, res, next) => {
     });
   }
 };
+
+//Update product details controller
+// const updateProductDetails = async (req, res, next) => {
+//   const id = req.params.id;
+//   try {
+
+// const updatedProductDetails = await productModel.findByIdAndUpdate(id, {
+//   productName: "Name",
+// }, {new:true});
+//     res.status(201).send({
+//       message: "Product Details Updated Successfully",
+//       updatedProductDetails,
+//     });
+//   } catch (error) {
+//     res.status(500).send({
+//       message: error,
+//     });
+//   }
+// };
 
 module.exports = {
   getAllProducts,
