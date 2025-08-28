@@ -5,7 +5,7 @@ const productRouter = require("./router/productRouter");
 require("dotenv").config();
 const mongoose = require("mongoose");
 mongoose
-  .connect("mongodb://127.0.0.1/e-commerce")
+  .connect(process.env.DB_URL)
   .then(() => {
     console.log("Database Connected Successfully");
   })

@@ -2,6 +2,7 @@ const transporter = require("../utility/sendEmail");
 const userModel = require("../schema/users");
 const joi = require("joi");
 const bcrypt = require("bcrypt");
+const jsonWebToken = require("jsonwebtoken");
 
 //Register controller
 const register = async (req, res, next) => {
@@ -49,15 +50,15 @@ const register = async (req, res, next) => {
   }
 
   // Send mail
-  // transporter.sendMail({
-  //   from: process.env.USER_EMAIL,
-  //   to: email,
-  //   subject: "Registered Successfully",
-  //   html: `
-  //   <h2>Registered Successfully</h2>
-  //   <p>Dear ${fullName}, your account has been created successfully</p>
-  //   `,
-  // });
+  transporter.sendMail({
+    from: process.env.USER_EMAIL,
+    to: email,
+    subject: "Registered Successfully",
+    html: `
+    <h2>Registered Successfully</h2>
+    <p>Dear ${fullName}, your account has been created successfully</p>
+    `,
+  });
 };
 
 const login = async (req, res, next) => {
@@ -78,8 +79,25 @@ const login = async (req, res, next) => {
       });
       return;
     } else {
+      const token = jsonWebToken.sign(
+        {
+          userId: checkAccount.id,
+          email: checkAccount.email,
+          role: checkAccount.role,
+        },
+        process.env.JWT_KEY
+      );
+
+      const { id, fullName, email, role } = checkAccount;
       res.status(200).send({
         message: "Logged in Successfully",
+        userDetails: {
+          id,
+          fullName,
+          email,
+          role,
+        },
+        token,
       });
     }
   } catch (error) {
