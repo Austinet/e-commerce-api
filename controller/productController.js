@@ -72,9 +72,38 @@ const addProduct = async (req, res, next) => {
   }
 };
 
-const deleteProduct = (req, res, next) => {
+const deleteProduct = async (req, res, next) => {
   const id = req.params.id;
-  res.send("E-commerce API APP - Delete " + id);
+  const ownerId = req.body.ownerId;
+
+  try {
+    // Check if product exists and if the user is the owner and Admin
+    const user = await userModel.findById(ownerId);
+    const product = await productModel.findById(id);
+
+    if (!product) {
+      res.status(404).send({
+        message: "Product not found",
+      });
+      return;
+    } else if (user?.role !== "admin" || product.ownerId !== ownerId) {
+      res.status(400).send({
+        message:
+          "Products can only be deleted by an admin and the owner of the product",
+      });
+      return;
+    } else {
+      //Delete product from database
+      await productModel.findByIdAndDelete(id);
+      res.status(201).send({
+        message: `${product.productName} Deleted Successfully`,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error,
+    });
+  }
 };
 
 module.exports = {
