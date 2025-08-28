@@ -1,4 +1,5 @@
 const productModel = require("../schema/products");
+const userModel = require("../schema/users");
 const joi = require("joi");
 
 //Get all products controller
@@ -13,8 +14,62 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
-const addProduct = (req, res, next) => {
-  res.send("E-commerce API APP - Add");
+//Add products controller
+const addProduct = async (req, res, next) => {
+  const {
+    productName,
+    description,
+    cost,
+    productImages,
+    stockStatus,
+    ownerId,
+  } = req.body;
+  try {
+    //Validation
+    const schema = joi
+      .string()
+      .valid("in-stock", "low-stock", "out-of-stock")
+      .required()
+      .messages({
+        "string.invalid": "",
+      });
+    const { error } = schema.validate(stockStatus);
+
+    if (error) {
+      res.status(422).send({
+        message: error.message,
+      });
+      return;
+    }
+
+    // Check if the user is an Admin
+    const user = await userModel.findById(ownerId);
+    if (user.role !== "admin") {
+      res.status(400).send({
+        message: "Products can only be added by an admin",
+      });
+      return;
+    }
+
+    // Save to Database
+    const newProduct = await productModel.create({
+      productName,
+      description,
+      cost,
+      productImages,
+      stockStatus,
+      ownerId,
+    });
+
+    res.status(201).send({
+      message: `${productName} Added Successfully`,
+      newProduct,
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error,
+    });
+  }
 };
 
 const deleteProduct = (req, res, next) => {

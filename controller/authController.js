@@ -30,7 +30,7 @@ const register = async (req, res, next) => {
     }
 
     // Save to Database
-    const user = await userModel.create({
+    await userModel.create({
       fullName,
       email,
       password,
@@ -39,7 +39,6 @@ const register = async (req, res, next) => {
 
     res.status(201).send({
       message: "Registered successfully",
-      user,
     });
   } catch (error) {
     res.status(500).send({
