@@ -1,6 +1,7 @@
 const transporter = require("../utility/sendEmail");
 const userModel = require("../schema/users");
 const joi = require("joi");
+const bcrypt = require("bcrypt");
 
 //Register controller
 const register = async (req, res, next) => {
@@ -30,10 +31,11 @@ const register = async (req, res, next) => {
     }
 
     // Save to Database
+    const hashedPassword = bcrypt.hashSync(password, 10);
     await userModel.create({
       fullName,
       email,
-      password,
+      password: hashedPassword,
       role,
     });
 
@@ -70,7 +72,7 @@ const login = async (req, res, next) => {
         message: "Account does not exist, please check email or create account",
       });
       return;
-    } else if (checkAccount.password !== password) {
+    } else if (!bcrypt.compareSync(password, checkAccount.password)) {
       res.status(400).send({
         message: "Invalid Credentials",
       });
