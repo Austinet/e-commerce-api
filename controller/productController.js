@@ -44,7 +44,7 @@ const addProduct = async (req, res, next) => {
 
     // Check if the user is an Admin
     const user = await userModel.findById(ownerId);
-    if (user.role !== "admin") {
+    if (user?.role !== "admin") {
       res.status(400).send({
         message: "Products can only be added by an admin",
       });
